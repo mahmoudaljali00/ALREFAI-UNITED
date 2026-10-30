@@ -1,0 +1,485 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum Language {
+  AR
+  EN
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  COMPLETED
+  ON_HOLD
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String?
+  avatar        String?
+  role          Role      @default(EDITOR)
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  createdPosts     Post[]           @relation("PostAuthor")
+  updatedPosts     Post[]           @relation("PostUpdater")
+  createdServices  Service[]        @relation("ServiceCreator")
+  updatedServices  Service[]        @relation("ServiceUpdater")
+  createdProjects  Project[]        @relation("ProjectCreator")
+  updatedProjects  Project[]        @relation("ProjectUpdater")
+  createdIndustries Industry[]      @relation("IndustryCreator")
+  updatedIndustries Industry[]      @relation("IndustryUpdater")
+  createdTeamMembers TeamMember[]   @relation("TeamMemberCreator")
+  updatedTeamMembers TeamMember[]   @relation("TeamMemberUpdater")
+  createdClients   Client[]         @relation("ClientCreator")
+  updatedClients   Client[]         @relation("ClientUpdater")
+  createdTestimonials Testimonial[] @relation("TestimonialCreator")
+  updatedTestimonials Testimonial[] @relation("TestimonialUpdater")
+  createdCategories Category[]       @relation("CategoryCreator")
+  updatedCategories Category[]       @relation("CategoryUpdater")
+  createdMedia     Media[]          @relation("MediaUploader")
+  createdSettings  SiteSetting[]    @relation("SettingCreator")
+  updatedSettings  SiteSetting[]    @relation("SettingUpdater")
+  createdStatistics Statistic[]     @relation("StatisticCreator")
+  updatedStatistics Statistic[]     @relation("StatisticUpdater")
+  createdSocialLinks SocialLink[]   @relation("SocialLinkCreator")
+  updatedSocialLinks SocialLink[]   @relation("SocialLinkUpdater")
+  createdSEO       SEOSetting[]     @relation("SEOCreator")
+  updatedSEO       SEOSetting[]     @relation("SEOUpdater")
+  contactMessages      ContactMessage[] @relation("ContactAssignee")
+  repliedContactMessages ContactMessage[] @relation("ContactRepliedBy")
+}
+
+model Company {
+  id                  String   @id @default(cuid())
+  nameAr              String   @default("شركة الرفاعي المتحدة")
+  nameEn              String   @default("ALREFAI UNITED COMPANY")
+  taglineAr           String?  @default("نبني الثقة... ونصنع المستقبل")
+  taglineEn           String?  @default("Building Trust. Shaping the Future.")
+  descriptionAr       String?  @db.Text
+  descriptionEn       String?  @db.Text
+  visionAr            String?  @db.Text
+  visionEn            String?  @db.Text
+  missionAr           String?  @db.Text
+  missionEn           String?  @db.Text
+  foundedYear         Int?     @default(2014)
+  logoLight           String?
+  logoDark            String?
+  favicon             String?
+  ogImage             String?
+  addressAr           String?
+  addressEn           String?
+  phone               String?
+  email               String?
+  whatsapp            String?
+  workingHoursAr      String?
+  workingHoursEn      String?
+  latitude            Float?
+  longitude           Float?
+  mapEmbedUrl         String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Service {
+  id              String   @id @default(cuid())
+  titleAr         String
+  titleEn         String
+  slug            String   @unique
+  shortDescriptionAr String? @db.Text
+  shortDescriptionEn String? @db.Text
+  descriptionAr   String?  @db.Text
+  descriptionEn   String?  @db.Text
+  icon            String?
+  image           String?
+  featured        Boolean  @default(false)
+  displayOrder    Int      @default(0)
+  isActive        Boolean  @default(true)
+  metaTitleAr     String?
+  metaTitleEn     String?
+  metaDescriptionAr String?
+  metaDescriptionEn String?
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy User? @relation("ServiceCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("ServiceUpdater", fields: [updatedById], references: [id])
+}
+
+model Project {
+  id              String        @id @default(cuid())
+  titleAr         String
+  titleEn         String
+  slug            String        @unique
+  category        String
+  locationAr      String?
+  locationEn      String?
+  descriptionAr   String?       @db.Text
+  descriptionEn   String?       @db.Text
+  shortDescriptionAr String?    @db.Text
+  shortDescriptionEn String?    @db.Text
+  completionDate  DateTime?
+  startDate       DateTime?
+  budget          String?
+  area            String?
+  clientAr        String?
+  clientEn        String?
+  status          ProjectStatus @default(COMPLETED)
+  featured        Boolean       @default(false)
+  displayOrder    Int           @default(0)
+  isActive        Boolean       @default(true)
+  mainImage       String?
+  gallery         ProjectImage[]
+  metaTitleAr     String?
+  metaTitleEn     String?
+  metaDescriptionAr String?
+  metaDescriptionEn String?
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  createdBy User? @relation("ProjectCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("ProjectUpdater", fields: [updatedById], references: [id])
+}
+
+model ProjectImage {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url       String
+  altAr     String?
+  altEn     String?
+  captionAr String?
+  captionEn String?
+  displayOrder Int   @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Industry {
+  id              String   @id @default(cuid())
+  nameAr          String
+  nameEn          String
+  slug            String   @unique
+  descriptionAr   String?  @db.Text
+  descriptionEn   String?  @db.Text
+  icon            String?
+  image           String?
+  featured        Boolean  @default(false)
+  displayOrder    Int      @default(0)
+  isActive        Boolean  @default(true)
+  metaTitleAr     String?
+  metaTitleEn     String?
+  metaDescriptionAr String?
+  metaDescriptionEn String?
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy User? @relation("IndustryCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("IndustryUpdater", fields: [updatedById], references: [id])
+}
+
+model TeamMember {
+  id              String   @id @default(cuid())
+  nameAr          String
+  nameEn          String
+  positionAr      String
+  positionEn      String
+  bioAr           String?  @db.Text
+  bioEn           String?  @db.Text
+  image           String?
+  email           String?
+  phone           String?
+  linkedin        String?
+  twitter         String?
+  displayOrder    Int      @default(0)
+  isActive        Boolean  @default(true)
+  featured        Boolean  @default(false)
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy User? @relation("TeamMemberCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("TeamMemberUpdater", fields: [updatedById], references: [id])
+}
+
+model Client {
+  id              String   @id @default(cuid())
+  nameAr          String
+  nameEn          String
+  logo            String
+  website         String?
+  descriptionAr   String?  @db.Text
+  descriptionEn   String?  @db.Text
+  isActive        Boolean  @default(true)
+  featured        Boolean  @default(false)
+  displayOrder    Int      @default(0)
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy User? @relation("ClientCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("ClientUpdater", fields: [updatedById], references: [id])
+}
+
+model Testimonial {
+  id              String   @id @default(cuid())
+  clientNameAr    String
+  clientNameEn    String
+  positionAr      String
+  positionEn      String
+  companyAr       String?
+  companyEn       String?
+  contentAr       String   @db.Text
+  contentEn       String   @db.Text
+  image           String?
+  rating          Int      @default(5)
+  isActive        Boolean  @default(true)
+  featured        Boolean  @default(false)
+  displayOrder    Int      @default(0)
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy User? @relation("TestimonialCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("TestimonialUpdater", fields: [updatedById], references: [id])
+}
+
+model Category {
+  id              String   @id @default(cuid())
+  nameAr          String
+  nameEn          String
+  slug            String   @unique
+  descriptionAr   String?  @db.Text
+  descriptionEn   String?  @db.Text
+  color           String?  @default("#0d2d1a")
+  icon            String?
+  displayOrder    Int      @default(0)
+  isActive        Boolean  @default(true)
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  posts           Post[]
+
+  createdBy User? @relation("CategoryCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("CategoryUpdater", fields: [updatedById], references: [id])
+}
+
+model Post {
+  id              String      @id @default(cuid())
+  titleAr         String
+  titleEn         String
+  slug            String      @unique
+  excerptAr       String?     @db.Text
+  excerptEn       String?     @db.Text
+  contentAr       String      @db.Text
+  contentEn       String      @db.Text
+  featuredImage   String?
+  status          PostStatus  @default(DRAFT)
+  publishedAt     DateTime?
+  metaTitleAr     String?
+  metaTitleEn     String?
+  metaDescriptionAr String?
+  metaDescriptionEn String?
+  ogImage         String?
+  viewCount       Int         @default(0)
+  authorId        String?
+  updaterId       String?
+  categoryId      String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  author      User?     @relation("PostAuthor", fields: [authorId], references: [id])
+  updater     User?     @relation("PostUpdater", fields: [updaterId], references: [id])
+  category    Category? @relation(fields: [categoryId], references: [id])
+}
+
+model ContactMessage {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  subject     String
+  message     String   @db.Text
+  isRead      Boolean  @default(false)
+  isReplied   Boolean  @default(false)
+  assignedToId String?
+  repliedAt   DateTime?
+  repliedById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assignedTo User? @relation("ContactAssignee", fields: [assignedToId], references: [id])
+  repliedBy  User? @relation("ContactRepliedBy", fields: [repliedById], references: [id])
+}
+
+model Media {
+  id          String   @id @default(cuid())
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int
+  url         String
+  publicId    String?
+  folder      String?
+  altAr       String?
+  altEn       String?
+  width       Int?
+  height      Int?
+  uploadedById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  uploadedBy User? @relation("MediaUploader", fields: [uploadedById], references: [id])
+}
+
+model SiteSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String   @db.Text
+  type        String   @default("string")
+  group       String   @default("general")
+  labelAr     String?
+  labelEn     String?
+  descriptionAr String?
+  descriptionEn String?
+  isPublic    Boolean  @default(false)
+  createdById String?
+  updatedById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  createdBy User? @relation("SettingCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("SettingUpdater", fields: [updatedById], references: [id])
+}
+
+model Statistic {
+  id              String   @id @default(cuid())
+  labelAr         String
+  labelEn         String
+  value           String
+  suffix          String?  @default("")
+  prefix          String?  @default("")
+  icon            String?
+  displayOrder    Int      @default(0)
+  isActive        Boolean  @default(true)
+  animate         Boolean  @default(true)
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy User? @relation("StatisticCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("StatisticUpdater", fields: [updatedById], references: [id])
+}
+
+model SocialLink {
+  id              String   @id @default(cuid())
+  platform        String
+  nameAr          String
+  nameEn          String
+  url             String
+  icon            String?
+  displayOrder    Int      @default(0)
+  isActive        Boolean  @default(true)
+  openInNewTab    Boolean  @default(true)
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy User? @relation("SocialLinkCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("SocialLinkUpdater", fields: [updatedById], references: [id])
+}
+
+model SEOSetting {
+  id              String   @id @default(cuid())
+  path            String   @unique
+  titleAr         String?
+  titleEn         String?
+  descriptionAr   String?
+  descriptionEn   String?
+  ogTitleAr       String?
+  ogTitleEn       String?
+  ogDescriptionAr String?
+  ogDescriptionEn String?
+  ogImage         String?
+  twitterCard     String?  @default("summary_large_image")
+  twitterTitleAr  String?
+  twitterTitleEn  String?
+  twitterDescriptionAr String?
+  twitterDescriptionEn String?
+  canonicalUrl    String?
+  structuredData  String?  @db.Text
+  noIndex         Boolean  @default(false)
+  noFollow        Boolean  @default(false)
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy User? @relation("SEOCreator", fields: [createdById], references: [id])
+  updatedBy User? @relation("SEOUpdater", fields: [updatedById], references: [id])
+}
+
+model Value {
+  id              String   @id @default(cuid())
+  titleAr         String
+  titleEn         String
+  descriptionAr   String   @db.Text
+  descriptionEn   String   @db.Text
+  icon            String?
+  displayOrder    Int      @default(0)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model FeaturedProject {
+  id              String   @id @default(cuid())
+  projectId       String   @unique
+  titleAr         String
+  titleEn         String
+  subtitleAr      String?
+  subtitleEn      String?
+  backgroundImage String?
+  ctaTextAr       String?
+  ctaTextEn       String?
+  ctaLink         String?
+  displayOrder    Int      @default(0)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
