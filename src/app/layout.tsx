@@ -1,27 +1,13 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, IBM_Plex_Sans_Arabic, Plus_Jakarta_Sans } from 'next/font/google';
+import { Tajawal } from 'next/font/google';
 import '@/styles/globals.css';
 import { I18nProvider } from '@/context/I18nContext';
 
-const inter = Inter({
-  subsets: ['latin'],
+const tajawal = Tajawal({
+  subsets: ['arabic', 'latin'],
   display: 'swap',
-  variable: '--font-inter',
-  weight: ['300', '400', '500', '600', '700'],
-});
-
-const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
-  subsets: ['arabic'],
-  display: 'swap',
-  variable: '--font-arabic',
-  weight: ['300', '400', '500', '600', '700'],
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-display',
-  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-tajawal',
+  weight: ['200', '300', '400', '500', '700', '800'],
 });
 
 export const viewport: Viewport = {
@@ -90,8 +76,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning className={`${inter.variable} ${ibmPlexSansArabic.variable} ${plusJakartaSans.variable}`}>
+  return (      <html lang="ar" dir="rtl" suppressHydrationWarning className={tajawal.variable}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

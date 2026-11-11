@@ -53,9 +53,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        arabic: ['var(--font-arabic)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-tajawal)', 'Tajawal', 'system-ui', 'sans-serif'],
+        arabic: ['var(--font-tajawal)', 'Tajawal', 'system-ui', 'sans-serif'],
+        display: ['var(--font-tajawal)', 'Tajawal', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'display-xl': ['clamp(3.5rem, 8vw, 6rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],

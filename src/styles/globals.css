@@ -4,9 +4,9 @@
 
 @layer base {
   :root {
-    --font-inter: 'Inter', system-ui, sans-serif;
-    --font-arabic: 'IBM Plex Sans Arabic', 'Noto Kufi Arabic', system-ui, sans-serif;
-    --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-inter: var(--font-tajawal);
+    --font-arabic: var(--font-tajawal);
+    --font-display: var(--font-tajawal);
   }
 
   * {
@@ -23,12 +23,9 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  html[dir="rtl"] body {
-    font-family: var(--font-arabic);
-  }
-
+  html[dir="rtl"] body,
   html[dir="ltr"] body {
-    font-family: var(--font-inter);
+    font-family: var(--font-tajawal);
   }
 
   ::selection {
@@ -208,6 +205,52 @@
     letter-spacing: 0.02em;
     text-transform: uppercase;
     color: rgb(107 114 128);
+  }
+
+  /* ---- Admin workspace -------------------------------------------------- */
+  .admin-panel {
+    @apply rounded-2xl border border-neutral-200/80 bg-white;
+    box-shadow: 0 1px 2px rgba(13, 45, 26, 0.04), 0 14px 34px -24px rgba(13, 45, 26, 0.28);
+  }
+
+  .admin-eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.24em] text-gold-600;
+  }
+
+  .admin-surface {
+    @apply text-neutral-800;
+  }
+
+  .admin-surface h1 {
+    @apply font-display text-[26px] font-semibold leading-tight tracking-tight text-primary-950;
+  }
+
+  .admin-surface h2 {
+    @apply font-display font-semibold tracking-tight text-primary-950;
+  }
+
+  .admin-surface table {
+    @apply border-collapse;
+  }
+
+  .admin-surface table thead th {
+    @apply whitespace-nowrap bg-neutral-50/70 px-6 py-3.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-neutral-500;
+  }
+
+  .admin-surface table tbody td {
+    @apply px-6 py-4 align-middle;
+  }
+
+  .admin-surface table tbody tr {
+    @apply transition-colors duration-150;
+  }
+
+  .admin-surface table tbody tr:hover {
+    @apply bg-primary-50/40;
+  }
+
+  .admin-surface .label {
+    @apply mb-1.5 text-[13px] font-semibold text-neutral-600;
   }
 }
 
